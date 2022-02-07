@@ -1,10 +1,9 @@
 
-package io.geoip.udf;
+package com.nttdata.poc;
 
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.AbstractCountryResponse;
-import com.maxmind.geoip2.model.DomainResponse;
 import com.maxmind.geoip2.record.AbstractNamedRecord;
 import io.confluent.ksql.function.udf.Udf;
 import io.confluent.ksql.function.udf.UdfDescription;
@@ -20,11 +19,11 @@ import java.net.InetAddress;
 import java.util.Map;
 
 
-@UdfDescription(name = "getDomainFromIp", description = "GeoIP Informations")
-public class GetDomainFromIpUdf implements Configurable {
+@UdfDescription(name = "getCountryFromIp", description = "GeoIP Informations")
+public class GetCountryFromIpUdf implements Configurable {
 
     private DatabaseReader reader;
-    private static final Logger log = LoggerFactory.getLogger(GetDomainFromIpUdf.class);
+    private static final Logger log = LoggerFactory.getLogger(GetCountryFromIpUdf.class);
 
     @Override
     public void configure(Map<String, ?> props) {
@@ -47,8 +46,8 @@ public class GetDomainFromIpUdf implements Configurable {
     }
 
 
-    @Udf(description = "Returns domain from IP input")
-    public String getDomainFromIp(@UdfParameter(value = "ip",
+    @Udf(description = "Returns city from IP input")
+    public String getCountryFromIp(@UdfParameter(value = "ip",
             description = "the IP address to lookup in the geoip database") final String ip) {
         if (reader == null) {
             log.error("No DB configured");
@@ -59,8 +58,9 @@ public class GetDomainFromIpUdf implements Configurable {
             log.debug("Lookup up City for IP: " + ip);
             InetAddress ipAddress = InetAddress.getByName(ip);
 
-            return reader.tryDomain(ipAddress)
-                    .map(DomainResponse::getDomain)
+            return reader.tryCountry(ipAddress)
+                    .map(AbstractCountryResponse::getCountry)
+                    .map(AbstractNamedRecord::getName)
                     .orElse(null);
         }
         catch (IOException | GeoIp2Exception e) {

@@ -1,29 +1,28 @@
-package io.geoip.udf;
+
+package com.nttdata.poc;
 
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.maxmind.geoip2.model.AbstractCityResponse;
-import com.maxmind.geoip2.record.AbstractNamedRecord;
-import org.apache.kafka.common.Configurable;
+import com.maxmind.geoip2.model.DomainResponse;
 import io.confluent.ksql.function.udf.Udf;
 import io.confluent.ksql.function.udf.UdfDescription;
+import io.confluent.ksql.function.udf.UdfParameter;
+import org.apache.kafka.common.Configurable;
+import org.apache.kafka.common.config.ConfigException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Map;
 
-import io.confluent.ksql.function.udf.UdfParameter;
-import org.apache.kafka.common.config.ConfigException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-
-@UdfDescription(name = "getCityFromIp", description = "GeoIP Informations")
-public class GetCityFromIpUdf implements Configurable {
+@UdfDescription(name = "getDomainFromIp", description = "GeoIP Informations")
+public class GetDomainFromIpUdf implements Configurable {
 
     private DatabaseReader reader;
-    private static final Logger log = LoggerFactory.getLogger(GetCityFromIpUdf.class);
+    private static final Logger log = LoggerFactory.getLogger(GetDomainFromIpUdf.class);
 
     @Override
     public void configure(Map<String, ?> props) {
@@ -46,8 +45,8 @@ public class GetCityFromIpUdf implements Configurable {
     }
 
 
-    @Udf(description = "Returns city from IP input")
-    public String getCityFromIp(@UdfParameter(value = "ip",
+    @Udf(description = "Returns domain from IP input")
+    public String getDomainFromIp(@UdfParameter(value = "ip",
             description = "the IP address to lookup in the geoip database") final String ip) {
         if (reader == null) {
             log.error("No DB configured");
@@ -58,9 +57,8 @@ public class GetCityFromIpUdf implements Configurable {
             log.debug("Lookup up City for IP: " + ip);
             InetAddress ipAddress = InetAddress.getByName(ip);
 
-            return reader.tryCity(ipAddress)
-                    .map(AbstractCityResponse::getCity)
-                    .map(AbstractNamedRecord::getName)
+            return reader.tryDomain(ipAddress)
+                    .map(DomainResponse::getDomain)
                     .orElse(null);
         }
         catch (IOException | GeoIp2Exception e) {

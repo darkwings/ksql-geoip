@@ -1,11 +1,10 @@
 
-package io.geoip.udf;
+package com.nttdata.poc;
 
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.AbstractCityResponse;
 import com.maxmind.geoip2.model.AbstractCountryResponse;
-import com.maxmind.geoip2.model.DomainResponse;
 import com.maxmind.geoip2.record.AbstractNamedRecord;
 import io.confluent.ksql.function.udf.Udf;
 import io.confluent.ksql.function.udf.UdfDescription;
