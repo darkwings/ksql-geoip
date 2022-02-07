@@ -47,7 +47,7 @@ public class GetDomainFromIpUdf implements Configurable {
     }
 
 
-    @Udf(description = "Returns city from IP input")
+    @Udf(description = "Returns domain from IP input")
     public String getDomainFromIp(@UdfParameter(value = "ip",
             description = "the IP address to lookup in the geoip database") final String ip) {
         if (reader == null) {
