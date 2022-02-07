@@ -20,7 +20,7 @@ import java.net.InetAddress;
 import java.util.Map;
 
 
-@UdfDescription(name = "getCountryFromIp", description = "GeoIP Informations")
+@UdfDescription(name = "getDomainFromIp", description = "GeoIP Informations")
 public class GetDomainFromIpUdf implements Configurable {
 
     private DatabaseReader reader;
@@ -48,7 +48,7 @@ public class GetDomainFromIpUdf implements Configurable {
 
 
     @Udf(description = "Returns city from IP input")
-    public String getCountryFromIp(@UdfParameter(value = "ip",
+    public String getDomainFromIp(@UdfParameter(value = "ip",
             description = "the IP address to lookup in the geoip database") final String ip) {
         if (reader == null) {
             log.error("No DB configured");
