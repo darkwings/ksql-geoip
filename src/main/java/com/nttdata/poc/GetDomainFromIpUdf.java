@@ -54,7 +54,7 @@ public class GetDomainFromIpUdf implements Configurable {
         }
 
         try {
-            log.debug("Lookup up City for IP: " + ip);
+            log.debug("Lookup up domain for IP: " + ip);
             InetAddress ipAddress = InetAddress.getByName(ip);
 
             return reader.tryDomain(ipAddress)
